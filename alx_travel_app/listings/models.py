@@ -1,15 +1,5 @@
 from django.db import models
 #Models for alx_trave app
-class Booking(models.Model):
-    listing = models.ForeignKey(Listing, related_name='bookings', on_delete=models.CASCADE)
-    user = models.ForeignKey('auth.User', related_name='bookings', on_delete=models.CASCADE)
-    start_date = models.DateField()
-    end_date = models.DateField()
-    status = models.CharField(max_length=20, choices=[('confirmed', 'Confirmed'), ('pending', 'Pending'), ('canceled', 'Canceled')], default='pending')
-
-    def __str__(self):
-        return f"Booking for {self.listing.title} by {self.user.username}"
-
 
 class Listing(models.Model):
     title = models.CharField(max_length=255)
@@ -34,3 +24,15 @@ class Review(models.Model):
 
     def __str__(self):
         return f"Review by {self.user.username} for {self.listing.title}"
+
+class Booking(models.Model):
+    listing = models.ForeignKey(Listing, related_name='bookings', on_delete=models.CASCADE)
+    user = models.ForeignKey('auth.User', related_name='bookings', on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    status = models.CharField(max_length=20, choices=[('confirmed', 'Confirmed'), ('pending', 'Pending'), ('canceled', 'Canceled')], default='pending')
+
+    def __str__(self):
+        return f"Booking for {self.listing.title} by {self.user.username}"
+
+

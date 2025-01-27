@@ -1,20 +1,26 @@
 from pathlib import Path
+
 import environ
 
+# ENV VARIABLES NEEDED:
+#   'DJANGO_SECRET_KEY'
+#   'DATABASE_URL':
+#       POSTGRESQL: DATABASE_URL =  'postgres://USER:PASSWORD@HOST:PORT/NAME'
+#       MYSQL: DATABASE_URL      =  'mysql://username:password@localhost:3306/mydatabase'
+#       SQLITE: DATABASE_URL     =  'sqlite:///path/to/your/db.sqlite3'
 # Initialize environment variables
-env = environ.Env(
-    DEBUG=(bool, False)
-)
-environ.Env.read_env()
+
+env = environ.Env()
+environ.Env.read_env('.env')  # Reads the .env file
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('DJANGO_SECRET_KEY', default='fallback_secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -26,13 +32,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # Third-party apps
     'rest_framework',
-    'corsheaders',
     'drf_yasg',
-
-    # Project apps
+    'corsheaders',
     'listings',
 ]
 
@@ -118,13 +120,5 @@ CELERY_TASK_SERIALIZER = 'json'
 # Database Configuration
 # Set up the database with MySQL and environment variables for sensitive information
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('DATABASE_NAME'),
-        'HOST': env('DATABASE_HOST'),
-        'PORT': env('DATABASE_PORT'),
-        'USER': env('DATABASE_USER'),
-        'PASSWORD': env('DATABASE_PASSWORD'),
-
-    }
+    'default': env.db('DATABASE_URL')  # This will automatically parse the database URL from the .env
 }
